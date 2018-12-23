@@ -1,7 +1,6 @@
+package functionalities;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -12,17 +11,11 @@ import java.util.regex.Pattern;
 
 public class NewBook {
 
-	public static void main(String[] args) {
-		Scanner scan = new Scanner(System.in);
-		Connection myConn=null;
-		PreparedStatement myStmt=null;
+	public static void newBook(Scanner scan, Connection myConn, PreparedStatement myStmt, Object obj) {
 		try {
-			myConn = DriverManager.getConnection(
-					"jdbc:mysql://localhost:33061/sap_library?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC",
-					"alex", "prileptsi");
 			myConn.setAutoCommit(false);
 			myStmt = myConn.prepareStatement(
-					"insert into books (title, author, datepublished, quantity) values" + "(?, ?, ?, ?)");
+					"insert into books (title, author, datepublished, quantity) values (?, ?, ?, ?)");
 			System.out.println("Title:");
 			String title = scan.nextLine();
 			myStmt.setString(1, title);
@@ -45,21 +38,15 @@ public class NewBook {
 			System.out.println("Quantity:");
 			int quantity = scan.nextInt();
 			myStmt.setInt(4, quantity);
-			
-			int rows = myStmt.executeUpdate();
+			int rows;
+			synchronized(obj) {
+			rows = myStmt.executeUpdate();
+			}
 			if(rows!=1) throw new Exception("Writing in the database failed!");
 
 			myConn.commit();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
-		}finally {
-			if(scan!=null) scan.close();
-				try {
-					if(myConn!=null) myConn.close();
-					if(myStmt!=null) myStmt.close();
-				} catch (SQLException e) {
-					System.out.println(e.getMessage());
-				}
 		}
 	}
 

@@ -1,32 +1,33 @@
+package functionalities;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Scanner;
 
 public class Login {
 
-	public static void main(String[] args) {
+	public static void login(Connection myConn, PreparedStatement myStmt, Scanner scan, ResultSet myRs, Object obj) throws AccessExc {
 		try {
-			Connection myConn = DriverManager.getConnection("jdbc:mysql://localhost:33061/sap_library?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "alex", "prileptsi");
-			PreparedStatement myStmt = myConn.prepareStatement("SELECT * from staff where username = ? and password=?;");
-			Scanner scan = new Scanner(System.in);
+			myStmt = myConn.prepareStatement("SELECT * from staff where username = ? and password=?;");
+			
 			System.out.println("Input username:");
 			String username = scan.nextLine();
 			System.out.println("Input password:");
 			String password = scan.nextLine();
 			myStmt.setString(1, username);
 			myStmt.setString(2, password);
-			ResultSet myRs = myStmt.executeQuery();
-			
+			synchronized(obj) {
+			myRs = myStmt.executeQuery();
+			}
 			if(myRs.next()) {
 				System.out.println("Welcome " + myRs.getString("username"));
 			} else {
 				System.out.println("Access denied");
+				throw new AccessExc();
 			}
-			scan.close();
 			
-		}catch (Exception e){
+		}catch (SQLException e){
 			System.out.println(e.getMessage());
 			e.printStackTrace();
 		}
