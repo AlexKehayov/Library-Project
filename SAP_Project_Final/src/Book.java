@@ -11,7 +11,10 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Book {
+import interfaces.Commitable;
+import interfaces.LibItem;
+
+public class Book implements LibItem, Commitable{
 	private int id;
 	private String title;
 	private String author;
@@ -109,7 +112,7 @@ public class Book {
 		return quantity;
 	}
 
-	public void addNewBook(Connection conn, Scanner scan) throws SQLException, Exception {
+	public void addNew(Connection conn, Scanner scan) throws SQLException, Exception {
 		conn.setAutoCommit(false);
 		PreparedStatement stmt = conn
 				.prepareStatement("insert into books (title, author, datepublished, quantity) values (?, ?, ?, ?)");
@@ -127,14 +130,7 @@ public class Book {
 		System.out.println("Title: " + this.getTitle() + ", Author: " + this.getAuthor() + ", " + "Published: "
 				+ this.getDatePublished() + ", Quantity: " + this.getQuantity());
 
-		System.out.println("To commit addition press 1");
-		if (scan.nextInt() == 1) {
-			conn.commit();
-			System.out.println("Addition Successful");
-		} else {
-			conn.rollback();
-			System.out.println("Addition Rolled Back");
-		}
+		confirm(scan, conn);
 	}
 
 	public void search(Connection conn, Scanner scan, int i) throws SQLException, Exception {
@@ -155,7 +151,7 @@ public class Book {
 					myRs.getString("datePublished"), myRs.getInt("quantity"));
 			System.out.println(temp.toString());
 		}
-		System.out.println("End of List");//+++++++++++++++++++++++++++++++
+		System.out.println("End of List");
 
 	}
 
@@ -163,13 +159,8 @@ public class Book {
 		conn.setAutoCommit(false);
 		PreparedStatement stmt = conn.prepareStatement("delete from books where id=?");
 		System.out.println("Enter id of book to be deleted:");
-//		int id = -1;
-//		try {
-//			id = scan.nextInt();
-//		} catch (InputMismatchException e) {
-//			System.out.println("Check your input");
-//		}
-		int id = Integer.parseInt(scan.nextLine());//+++++++++++++++++++++++++++
+
+		int id = Integer.parseInt(scan.nextLine());
 		stmt.setInt(1, id);
 
 		Statement stmt2 = conn.createStatement();
@@ -186,14 +177,7 @@ public class Book {
 		if (rows != 1)
 			throw new Exception("Deletion Failed!");
 
-		System.out.println("To commit deletion press 1");
-		if (scan.nextInt() == 1) {
-			conn.commit();
-			System.out.println("Deletion Successful");
-		} else {
-			conn.rollback();
-			System.out.println("Deletion Rolled Back");
-		}
+		confirm(scan, conn);
 
 	}
 

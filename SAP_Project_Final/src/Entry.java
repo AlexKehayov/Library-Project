@@ -8,7 +8,10 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Scanner;
 
-public class Entry{
+import interfaces.Commitable;
+import interfaces.LibService;
+
+public class Entry implements LibService, Commitable{
 	private int id;
 	private Book book;
 	private User user;
@@ -28,6 +31,10 @@ public class Entry{
 
 	public String getDeadline() {
 		return deadline;
+	}
+	
+	public Entry() {
+		
 	}
 
 	public Entry(Scanner scan, Connection conn) throws SQLException, Exception {
@@ -73,7 +80,7 @@ public class Entry{
 		this.user = new User(scan, 3);
 	}
 
-	public void giveBook(Scanner scan, Connection conn) throws SQLException, Exception {
+	public void give(Scanner scan, Connection conn) throws SQLException, Exception {
 		conn.setAutoCommit(false);
 		int rows = 0;
 		Statement stmt = conn.createStatement();
@@ -89,14 +96,7 @@ public class Entry{
 		if (rows != 1)
 			throw new Exception("Writing in database failed!");
 
-		System.out.println("To commit Entry press 1");
-		if (scan.nextInt() == 1) {
-			conn.commit();
-			System.out.println("Entry Addition Successful");
-		} else {
-			conn.rollback();
-			System.out.println("Entry Addition Rolled Back");
-		}
+		confirm(scan, conn);
 	}
 
 	public void search(Scanner scan, Connection conn) throws Exception {
@@ -120,7 +120,7 @@ public class Entry{
 
 	}
 
-	public static void returnBook(Scanner scan, Connection conn) throws SQLException, Exception {
+	public void getBack(Scanner scan, Connection conn) throws SQLException, Exception {
 		conn.setAutoCommit(false);
 		Statement stmt = conn.createStatement();
 		System.out.println("Select entry to delete:");
@@ -163,9 +163,10 @@ public class Entry{
 			conn.rollback();
 			System.out.println("Entry Deletion Rolled Back");
 		}
+		
 	}
 	
-	public static void viewExpired(Connection conn) throws SQLException {
+	public void viewExpired(Connection conn) throws SQLException {
 		Entry entry;
 		Book book;
 		User user;
@@ -184,7 +185,7 @@ public class Entry{
 		System.out.println("End of List");
 	}
 	
-	public static void viewUsersTaken(Connection conn) throws SQLException{
+	public void viewUsersTaken(Connection conn) throws SQLException{
 		Entry entry;
 		Book book;
 		User user;
@@ -212,7 +213,4 @@ public class Entry{
 		return "Entry: " + id + " - " + book.getTitle() + " (" + book.getAuthor() + ") - " + user.getUsername() + " ("
 				+ user.getPhone() + ") - Deadline: " + deadline;
 	}
-
-	
-
 }

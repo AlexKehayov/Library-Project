@@ -4,7 +4,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
 
-public class StaffMember {
+import interfaces.Staff;
+
+public class StaffMember implements Staff{
 	private String username;
 	private String password;
 

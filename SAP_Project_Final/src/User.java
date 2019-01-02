@@ -7,7 +7,9 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class User {
+import interfaces.Commitable;
+
+public class User implements Commitable{
 	private int id;
 	private String username;
 	private String phone;
@@ -79,14 +81,7 @@ public class User {
 
 		System.out.println("Username: " + this.getUsername() + ", Phone: " + this.getPhone() + ";");
 
-		System.out.println("To commit addition press 1");
-		if (scan.nextInt() == 1) {
-			conn.commit();
-			System.out.println("Addition Successful");
-		} else {
-			conn.rollback();
-			System.out.println("Addition Rolled Back");
-		}
+		confirm(scan, conn);
 	}
 
 	public void search(Connection conn, Scanner scan) throws SQLException, Exception {
