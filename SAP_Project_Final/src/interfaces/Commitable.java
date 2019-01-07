@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.util.Scanner;
 
 public interface Commitable {
-	default void confirm(Scanner scan, Connection conn) throws SQLException {
+	static void confirm1(Scanner scan, Connection conn) throws SQLException {
 		System.out.println("To commit press 1");
 		if (scan.nextInt() == 1) {
 			conn.commit();
@@ -16,5 +16,5 @@ public interface Commitable {
 			System.out.println("Commit Rolled Back");
 		}
 	}
-
+	
 }

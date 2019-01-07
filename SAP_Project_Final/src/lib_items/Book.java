@@ -1,8 +1,5 @@
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+package lib_items;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -11,10 +8,15 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import interfaces.Commitable;
-import interfaces.LibItem;
+public class Book extends AbsBook{
 
-public class Book implements LibItem, Commitable{
+	public final static String SQL_ADDNEW_INSERT = "insert into books (title, author, datepublished, quantity) values (?, ?, ?, ?)";
+	public final static String SQL_SEARCH_SELECT_1 = "select * from books where title like ? and author like ? and datepublished like ?;";
+	public final static String SQL_SEARCH_SELECT_2 = "select * from books;";
+	public final static String SQL_SEARCH_SELECT_3 = "select * from books where title like ?;";
+	public final static String SQL_DELETE_DELETE = "delete from books where id=?";
+	public final static String SQL_DELETE_SELECT = "select * from books where id=?;";
+
 	private int id;
 	private String title;
 	private String author;
@@ -110,75 +112,6 @@ public class Book implements LibItem, Commitable{
 
 	public int getQuantity() {
 		return quantity;
-	}
-
-	public void addNew(Connection conn, Scanner scan) throws SQLException, Exception {
-		conn.setAutoCommit(false);
-		PreparedStatement stmt = conn
-				.prepareStatement("insert into books (title, author, datepublished, quantity) values (?, ?, ?, ?)");
-
-		stmt.setString(1, this.getTitle());
-		stmt.setString(2, this.getAuthor());
-		stmt.setString(3, this.getDatePublished());
-		stmt.setInt(4, this.getQuantity());
-
-		int rows;
-		rows = stmt.executeUpdate();
-		if (rows != 1)
-			throw new Exception("Writing in the database failed!");
-
-		System.out.println("Title: " + this.getTitle() + ", Author: " + this.getAuthor() + ", " + "Published: "
-				+ this.getDatePublished() + ", Quantity: " + this.getQuantity());
-
-		confirm(scan, conn);
-	}
-
-	public void search(Connection conn, Scanner scan, int i) throws SQLException, Exception {
-		Statement myStmt = conn.createStatement();
-		ResultSet myRs = null;
-		if (i == 1) {
-			myRs = myStmt.executeQuery(
-					"select * from books where title like '%" + this.getTitle() + "%'" + " and author like '%"
-							+ this.getAuthor() + "%' and datepublished like '%" + this.getDatePublished() + "%';");
-		} else if (i == 2) {
-			myRs = myStmt.executeQuery("select * from books;");
-		} else if (i == 3) {
-			myRs = myStmt.executeQuery("select * from books where title like '%" + this.getTitle() + "%';");
-		}
-		Book temp;
-		while (myRs.next()) {
-			temp = new Book(myRs.getInt("id"), myRs.getString("title"), myRs.getString("author"),
-					myRs.getString("datePublished"), myRs.getInt("quantity"));
-			System.out.println(temp.toString());
-		}
-		System.out.println("End of List");
-
-	}
-
-	public void delete(Connection conn, Scanner scan) throws SQLException, Exception {
-		conn.setAutoCommit(false);
-		PreparedStatement stmt = conn.prepareStatement("delete from books where id=?");
-		System.out.println("Enter id of book to be deleted:");
-
-		int id = Integer.parseInt(scan.nextLine());
-		stmt.setInt(1, id);
-
-		Statement stmt2 = conn.createStatement();
-		ResultSet myRs = stmt2.executeQuery("select * from books where id=" + id + ";");
-
-		if (myRs.next()) {
-			Book temp = new Book(myRs.getInt("id"), myRs.getString("title"), myRs.getString("author"),
-					myRs.getString("datePublished"), myRs.getInt("quantity"));
-			System.out.println(temp.toString());
-		} else
-			throw new Exception("No such book found!");
-
-		int rows = stmt.executeUpdate();
-		if (rows != 1)
-			throw new Exception("Deletion Failed!");
-
-		confirm(scan, conn);
-
 	}
 
 	@Override

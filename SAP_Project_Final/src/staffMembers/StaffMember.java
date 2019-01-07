@@ -1,22 +1,13 @@
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+package staffMembers;
 import java.util.Scanner;
 
-import interfaces.Staff;
+public class StaffMember extends AbsStaffMember{
 
-public class StaffMember implements Staff{
+	public final static String SQL_STAFFVERIFICATION_SELECT = "SELECT * from staff where username = ? and password=?;";
+	
 	private String username;
 	private String password;
 
-	public String getUsername() {
-		return username;
-	}
-	
-	private String getPassword() {
-		return password;
-	}
 
 	public StaffMember(Scanner scan) {
 		System.out.println("Enter username:");
@@ -27,29 +18,20 @@ public class StaffMember implements Staff{
 		this.password = password;
 	}
 
-	private StaffMember(String username, String password) {
+	public StaffMember(String username, String password) {
 		super();
 		this.username = username;
 		this.password = password;
 	}
-
-	public boolean staffVerification(Connection myConn) throws SQLException {
-
-		PreparedStatement myStmt = myConn.prepareStatement("SELECT * from staff where username = ? and password=?;");
-		myStmt.setString(1, this.getUsername());
-		myStmt.setString(2, this.getPassword());
-
-		ResultSet myRs = myStmt.executeQuery();
-		StaffMember temp;
-		if (myRs.next()) {
-			String username = myRs.getString("username");
-			String password = myRs.getString("password");
-			temp = new StaffMember(username, password);
-		}else return false;
-		
-		return this.equals(temp);
+	
+	public String getUsername() {
+		return username;
 	}
-
+	
+	public String getPassword() {
+		return password;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -80,5 +62,4 @@ public class StaffMember implements Staff{
 			return false;
 		return true;
 	}
-
 }
