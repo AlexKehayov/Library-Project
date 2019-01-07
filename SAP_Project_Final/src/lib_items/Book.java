@@ -1,12 +1,6 @@
 package lib_items;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 import java.util.Scanner;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Book extends AbsBook{
 
@@ -37,35 +31,6 @@ public class Book extends AbsBook{
 		this.title = title;
 		this.author = author;
 		this.datePublished = datePublished;
-		this.quantity = quantity;
-	}
-
-	public Book(Scanner scan) throws Exception {
-		System.out.println("Title:");
-		String title = scan.nextLine();
-		if (title == null || title.equals(""))
-			throw new Exception("Unnamed books are not allowed!");
-		System.out.println("Author:");
-		String author = scan.nextLine();
-		System.out.println("Date Published (yyyy-mm-dd):");
-		String date = scan.nextLine();
-		Pattern p1 = Pattern.compile("^[0-9]{4}+[-]{1}+[0-9]{2}+[-]{1}+[0-9]{2}$");
-		Matcher m1 = p1.matcher(date);
-		if (!m1.matches()) {
-			throw new Exception("Invalid Date Format");
-		}
-		DateFormat format = new SimpleDateFormat("yyyy-mm-dd", Locale.ENGLISH);
-		Date tempdate = format.parse(date);
-
-		if (!format.format(tempdate).equals(date))
-			throw new Exception("Invalid Date Format");
-		System.out.println("Quantity:");
-		int quantity = scan.nextInt();
-		if (quantity < 0)
-			throw new Exception("Please enter correct quantity!");
-		this.title = title;
-		this.author = author;
-		this.datePublished = date;
 		this.quantity = quantity;
 	}
 
@@ -114,6 +79,27 @@ public class Book extends AbsBook{
 		return quantity;
 	}
 
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public void setAuthor(String author) {
+		this.author = author;
+	}
+
+	public void setDatePublished(String datePublished) {
+		this.datePublished = datePublished;
+	}
+
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
+	}
+	
 	@Override
 	public String toString() {
 		return "Book [id:" + id + ", title:" + title + ", author:" + author + ", datePublished:" + datePublished

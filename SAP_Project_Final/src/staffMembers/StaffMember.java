@@ -1,5 +1,4 @@
 package staffMembers;
-import java.util.Scanner;
 
 public class StaffMember extends AbsStaffMember{
 
@@ -9,17 +8,7 @@ public class StaffMember extends AbsStaffMember{
 	private String password;
 
 
-	public StaffMember(Scanner scan) {
-		System.out.println("Enter username:");
-		String username = scan.nextLine();
-		System.out.println("Enter password:");
-		String password = scan.nextLine();
-		this.username = username;
-		this.password = password;
-	}
-
 	public StaffMember(String username, String password) {
-		super();
 		this.username = username;
 		this.password = password;
 	}

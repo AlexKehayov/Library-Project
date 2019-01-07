@@ -27,6 +27,12 @@ abstract class AbsUser {
 	public abstract String getUsername();
 
 	public abstract String getPhone();
+	
+	public abstract void setId(int id);
+
+	public abstract void setUsername(String username);
+
+	public abstract void setPhone(String phone);
 
 	public abstract String toString();
 }

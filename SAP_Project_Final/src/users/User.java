@@ -1,8 +1,6 @@
 package users;
 
 import java.util.Scanner;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class User extends AbsUser {
 	public final static String SQL_ADDNEWUSER_INSERT = "insert into users (username, phone) values (?, ?);";
@@ -19,21 +17,6 @@ public class User extends AbsUser {
 	}
 
 	public User(String username, String phone) {
-		this.username = username;
-		this.phone = phone;
-	}
-
-	public User(Scanner scan) throws Exception {
-		System.out.println("Username:");
-		String username = scan.nextLine();
-		System.out.println("Phone:");
-		String phone = scan.nextLine();
-
-		Pattern p1 = Pattern.compile("^[0-9]{10}$");
-		Matcher m1 = p1.matcher(phone);
-		if (!m1.matches()) {
-			throw new Exception("Invlaid phone number");
-		}
 		this.username = username;
 		this.phone = phone;
 	}
@@ -60,6 +43,18 @@ public class User extends AbsUser {
 		return phone;
 	}
 
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+	
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", username=" + username + ", phone=" + phone + "]";

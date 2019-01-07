@@ -1,20 +1,9 @@
 package entries;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Scanner;
-
-import interfaces.EntryServices;
-import interfaces.LibItemServices;
-import interfaces.UserServices;
 import lib_items.Book;
 import users.User;
 
-public class BookEntry extends AbsEntry implements EntryServices {
+public class BookEntry extends AbsEntry {
 	public static final String SQL_GIVE_UPDATE = "update books set quantity=(quantity-1) where id=?;";
 	public static final String SQL_GIVE_INSERT = "insert into bookstaken (book_id, user_id, deadline) values (?, ?, ? + interval ? month);";
 	public static final String SQL_SEARCH_SELECT = "SELECT bookstaken.id, username, phone,  title, author, deadline FROM bookstaken JOIN users ON users.id = bookstaken.user_id JOIN books ON books.id = bookstaken.book_id where username like ? and title like ? and phone like ? and author like ?;";
@@ -34,50 +23,23 @@ public class BookEntry extends AbsEntry implements EntryServices {
 
 	}
 
-	public BookEntry(int id, Book book, User user, String deadline) {
+	public BookEntry(int id, Book book, User user, String dateGiven, int termMonths) {
 		this.id = id;
 		this.book = book;
 		this.user = user;
-		this.dateGiven = deadline;
+		this.dateGiven = dateGiven;
+		this.termMonths = termMonths;
 	}
 
-	public BookEntry(Scanner scan) throws Exception {
-		this.book = new Book(scan, 3);
-		this.user = new User(scan, 3);
-	}
+	public BookEntry(int id, String dateGiven, int termMonths, int bookId, String bookTitle, String bookAuthor,
+			String bookDatePublished, int bookQuantity, int userId, String userUsername, String userPhone)
+			throws Exception {
 
-	public BookEntry(Scanner scan, Connection conn) throws SQLException, Exception {
-		LibItemServices.search(conn, scan, 1);
-		scan.nextLine();
-		System.out.println("Choose book's id:");
-		int id = Integer.parseInt(scan.nextLine());
-
-		Statement stmt = conn.createStatement();
-		ResultSet rs = stmt.executeQuery("select * from books where id=" + id + ";");
-		if (rs.next()) {
-			int quantity = rs.getInt("quantity");
-			if(quantity<=0) throw new Exception("This book is out of stock!");
-			this.book = new Book(rs.getInt("id"), rs.getString("title"), rs.getString("author"),
-					rs.getString("datepublished"), quantity);
-		} else
-			throw new Exception("No such book found");
-
-		UserServices.search(conn, scan);
-		scan.nextLine();
-		System.out.println("Choose user's id:");
-		id = Integer.parseInt(scan.nextLine());
-		ResultSet rs2 = stmt.executeQuery("select * from users where id=" + id + ";");
-		if (rs2.next()) {
-			this.user = new User(rs2.getInt("id"), rs2.getString("username"), rs2.getString("phone"));
-		} else
-			throw new Exception("No such user found");
-
-		Date date = new Date();
-		SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
-		this.dateGiven = ft.format(date);
-
-		System.out.println("Term (Months): ");
-		this.termMonths = Integer.parseInt(scan.nextLine());
+		this.id = id;
+		this.dateGiven = dateGiven;
+		this.termMonths = termMonths;
+		this.book = new Book(bookId, bookTitle, bookAuthor, bookDatePublished, bookQuantity);
+		this.user = new User(userId, userUsername, userPhone);
 	}
 
 	public int getId() {

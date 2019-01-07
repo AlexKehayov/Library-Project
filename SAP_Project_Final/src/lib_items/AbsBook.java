@@ -36,7 +36,18 @@ abstract class AbsBook {
 	public abstract String getDatePublished();
 
 	public abstract int getQuantity();
+	
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public abstract void setTitle(String title);
+
+	public abstract void setAuthor(String author);
+
+	public abstract void setDatePublished(String datePublished);
+
+	public abstract void setQuantity(int quantity);
 
 	public abstract String toString();
-
 }
