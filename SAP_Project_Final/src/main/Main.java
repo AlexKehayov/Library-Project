@@ -96,7 +96,7 @@ public class Main {
 				} catch (Exception e) {
 					System.out.println("A Problem Occured... Please check your input");
 					System.out.println(e.getMessage());
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 
 			}

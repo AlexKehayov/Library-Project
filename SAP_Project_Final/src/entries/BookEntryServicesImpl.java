@@ -145,7 +145,6 @@ public class BookEntryServicesImpl extends BookEntry implements EntryServices{
 	public BookEntry BookEntryCreator(Scanner scan, Connection conn) throws SQLException, Exception {
 		Book book;
 		User user;
-		//LibItemServices.search(conn, scan, 1);
 		new BookLibItemServicesImpl().search(conn, scan, 1);
 		scan.nextLine();
 		System.out.println("Choose book's id:");
